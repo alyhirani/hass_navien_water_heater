@@ -332,6 +332,7 @@ class NavilinkConnect():
         self.loop.call_soon_threadsafe(self.async_handle_channel_info, client, userdata, message)
 
     def async_handle_channel_status(self, client, userdata, message):
+        _LOGGER.debug("async_handle_channel_status = " + message.payload.decode("utf-8") + "\n")
         response = json.loads(message.payload)
         channel_status = response.get("response",{}).get("channelStatus",{})
         session_id = response.get("sessionID","unknown")
@@ -413,6 +414,7 @@ class NavilinkChannel:
         channel_status["powerStatus"] = channel_status["powerStatus"] == 1
         channel_status["onDemandUseFlag"] = channel_status["onDemandUseFlag"] == 1
         channel_status["avgCalorie"] = channel_status["avgCalorie"]/2.0
+        channel_status["weeklyControl"] = channel_status["weeklyControl"] == 1
         if self.channel_info.get("temperatureType",2) == TemperatureType.CELSIUS.value:
             if channel_status["unitType"] in [DeviceSorting.NFC.value,DeviceSorting.NCB_H.value,DeviceSorting.NFB.value,DeviceSorting.NVW.value,]:
                 GIUFactor = 100
